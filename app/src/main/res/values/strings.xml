@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Github User</string>
+    <string name="search">Search</string>
+    <string name="content_description_search">Menu Search</string>
+    <string name="more">More</string>
+    <string name="content_description_more">Menu More</string>
+    <string name="favorite">Favorite</string>
+    <string name="content_description_favorite">Menu Favorite</string>
+</resources>
