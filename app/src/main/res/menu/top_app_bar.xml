@@ -16,10 +16,4 @@
         android:contentDescription="@string/content_description_search"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/more"
-        android:title="@string/more"
-        android:contentDescription="@string/content_description_more"
-        app:showAsAction="never" />
-
 </menu>

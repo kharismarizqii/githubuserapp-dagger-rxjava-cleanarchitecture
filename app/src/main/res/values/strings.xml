@@ -6,4 +6,7 @@
     <string name="content_description_more">Menu More</string>
     <string name="favorite">Favorite</string>
     <string name="content_description_favorite">Menu Favorite</string>
+    <string name="content_description_image_user">Image User</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
 </resources>
