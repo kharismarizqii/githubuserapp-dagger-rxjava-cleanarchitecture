@@ -10,8 +10,11 @@ import com.kharismarizqii.githubuserapp.core.data.source.remote.response.UserRes
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RemoteDataSource private constructor(private val apiService: ApiService){
+@Singleton
+class RemoteDataSource @Inject constructor(private val apiService: ApiService){
     fun getSearchUser(q: String): LiveData<ApiResponse<List<UserResponse>>>{
         val resultData = MutableLiveData<ApiResponse<List<UserResponse>>>()
 
