@@ -15,6 +15,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +52,7 @@ dependencies {
 
     //circle image
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation "com.github.bumptech.glide:glide:$glide_version"
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -74,4 +76,6 @@ dependencies {
 
     implementation "androidx.activity:activity-ktx:$activity_ktx_version"
     implementation "androidx.fragment:fragment-ktx:$fragment_ktx_version"
+
+    implementation 'androidx.multidex:multidex:2.0.1'
 }

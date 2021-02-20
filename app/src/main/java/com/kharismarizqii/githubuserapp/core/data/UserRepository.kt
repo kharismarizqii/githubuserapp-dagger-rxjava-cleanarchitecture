@@ -22,7 +22,8 @@ class UserRepository @Inject constructor(
     override fun getSearchUser(q: String): LiveData<Resource<List<User>>> =
         object : NetworkBoundResource<List<User>,List<UserResponse>>(appExecutors){
             override fun loadFromDB(): LiveData<List<User>> {
-                return Transformations.map(localDataSource.getSearchUser(q)){
+                val query = "%$q%"
+                return Transformations.map(localDataSource.getSearchUser(query)){
                     DataMapper.mapUserEntitiesToDomain(it)
                 }
             }
