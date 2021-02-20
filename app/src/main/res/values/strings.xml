@@ -9,4 +9,5 @@
     <string name="content_description_image_user">Image User</string>
     <string name="followers">Followers</string>
     <string name="following">Following</string>
+    <string name="something_wrong">There\'s something wrong</string>
 </resources>

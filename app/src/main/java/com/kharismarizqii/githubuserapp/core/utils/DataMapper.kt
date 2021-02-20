@@ -9,7 +9,7 @@ object DataMapper {
         val userList = ArrayList<UserEntity>()
         input.map{
             val user = UserEntity(
-                id = it.id,
+                id = it.id.toString(),
                 username = it.username,
                 avatarUrl = it.avatarUrl
             )

@@ -1,7 +1,7 @@
 package com.kharismarizqii.githubuserapp.core.domain.model
 
 data class DetailUser(
-    val id: Int,
+    val id: String,
     val username: String,
     val avatarUrl: String,
     val name: String,

@@ -1,6 +1,6 @@
 package com.kharismarizqii.githubuserapp.di
 
-import com.kharismarizqii.githubuserapp.MainActivity
+import com.kharismarizqii.githubuserapp.user.MainActivity
 import com.kharismarizqii.githubuserapp.core.di.CoreComponent
 import dagger.Component
 

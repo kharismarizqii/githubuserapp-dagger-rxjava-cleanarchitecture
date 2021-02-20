@@ -10,7 +10,7 @@ data class DetailUserEntity(
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
-    var id: Int,
+    var id: String,
 
     @ColumnInfo(name = "username")
     var username: String,
