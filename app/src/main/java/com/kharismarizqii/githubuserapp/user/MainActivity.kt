@@ -3,14 +3,14 @@ package com.kharismarizqii.githubuserapp.user
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding2.widget.RxSearchView
 import com.kharismarizqii.githubuserapp.MyApplication
@@ -19,6 +19,8 @@ import com.kharismarizqii.githubuserapp.core.data.Resource
 import com.kharismarizqii.githubuserapp.core.ui.UserAdapter
 import com.kharismarizqii.githubuserapp.core.ui.ViewModelFactory
 import com.kharismarizqii.githubuserapp.databinding.AppBarBinding
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         factory
     }
     private lateinit var binding: AppBarBinding
+    private lateinit var userAdapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as MyApplication).appComponent.inject(this)
@@ -38,28 +41,12 @@ class MainActivity : AppCompatActivity() {
         binding = AppBarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = UserAdapter()
-        viewModel.getSearchUser("kharisma").observe(this, { user ->
-            if(user != null){
-                when(user){
-                    is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
-                    is Resource.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        adapter.setData(user.data)
-                    }
-                    is Resource.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.viewError.root.visibility = View.VISIBLE
-                        binding.viewError.tvError.text = user.message ?: getString(R.string.something_wrong)
-                    }
-                }
-            }
-        })
+        userAdapter = UserAdapter()
 
-        with(binding.rvUser){
+        with(binding.rvUser) {
             layoutManager = LinearLayoutManager(this@MainActivity)
             setHasFixedSize(true)
-            this.adapter = adapter
+            adapter = userAdapter
         }
     }
 
@@ -70,15 +57,46 @@ class MainActivity : AppCompatActivity() {
         val searchView = menu?.findItem(R.id.search)?.actionView as SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.queryHint = resources.getString(R.string.search_hint)
-        val queryStream = RxSearchView.queryTextChanges(searchView)
-            .skipInitialValue()
-            .distinctUntilChanged()
-            .debounce(400, TimeUnit.MILLISECONDS)
 
-        queryStream.subscribe{
-            Log.e("Query", "ini querynya: $it")
-//            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-        }
+        val queryStream = RxSearchView.queryTextChanges(searchView)
+            .map { query ->
+                query.toString()
+            }
+            .debounce(400, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+
+
+        queryStream.subscribe({
+            if (it.isNotEmpty()) {
+                Log.e("queryStream", "ini querynya ${it}")
+                getSearchUser(it)
+            }
+        }, {
+            Log.e("queryStream Exception", "${it.message}")
+        })
         return true
+    }
+
+    private fun getSearchUser(q: String) {
+
+        viewModel.getSearchUser(q).observe(this, { user ->
+            Log.e("Observe LiveData", "${user.data}")
+            if (user != null) {
+                when (user) {
+                    is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is Resource.Success -> {
+                        Log.e("Observe LiveData", " Resource Success: ${user.data}")
+                        binding.progressBar.visibility = View.GONE
+                        userAdapter.setData(user.data)
+                    }
+                    is Resource.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.viewError.root.visibility = View.VISIBLE
+                        binding.viewError.tvError.text =
+                            user.message ?: getString(R.string.something_wrong)
+                    }
+                }
+            }
+        })
     }
 }

@@ -1,5 +1,6 @@
 package com.kharismarizqii.githubuserapp.core.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     fun setData(newListData: List<User>?){
         if (newListData == null) return
+        Log.e("User Adapter", "newListData: $newListData")
         listData.clear()
         listData.addAll(newListData)
         notifyDataSetChanged()

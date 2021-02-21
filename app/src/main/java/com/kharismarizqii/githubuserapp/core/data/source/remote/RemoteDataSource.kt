@@ -1,39 +1,35 @@
 package com.kharismarizqii.githubuserapp.core.data.source.remote
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.kharismarizqii.githubuserapp.core.data.source.remote.network.ApiResponse
 import com.kharismarizqii.githubuserapp.core.data.source.remote.network.ApiService
-import com.kharismarizqii.githubuserapp.core.data.source.remote.response.UserListResponse
 import com.kharismarizqii.githubuserapp.core.data.source.remote.response.UserResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RemoteDataSource @Inject constructor(private val apiService: ApiService){
-    fun getSearchUser(q: String): LiveData<ApiResponse<List<UserResponse>>>{
-        val resultData = MutableLiveData<ApiResponse<List<UserResponse>>>()
+class RemoteDataSource @Inject constructor(private val apiService: ApiService) {
+    fun getSearchUser(q: String): Flowable<ApiResponse<List<UserResponse>>> {
+        val resultData = PublishSubject.create<ApiResponse<List<UserResponse>>>()
 
         val client = apiService.getSearchUser(q)
 
-        client.enqueue(object : Callback<UserListResponse>{
-            override fun onResponse(
-                call: Call<UserListResponse>,
-                response: Response<UserListResponse>
-            ) {
-                val dataArray = response.body()?.list
-                resultData.value = if (dataArray != null) ApiResponse.Success(dataArray) else ApiResponse.Empty
-            }
-
-            override fun onFailure(call: Call<UserListResponse>, t: Throwable) {
-                resultData.value = ApiResponse.Error(t.message.toString())
-                Log.e("RemoteDataSource", t.message.toString())
-            }
-        })
-        return resultData
+        client
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .take(1)
+            .subscribe({ response ->
+                val dataArray = response.list
+                resultData.onNext(if (dataArray.isNotEmpty()) ApiResponse.Success(dataArray) else ApiResponse.Empty)
+            }, { error ->
+                resultData.onNext(ApiResponse.Error(error.message.toString()))
+                Log.e("RemoteDataSource", error.toString())
+            })
+        return resultData.toFlowable(BackpressureStrategy.BUFFER)
     }
 }
