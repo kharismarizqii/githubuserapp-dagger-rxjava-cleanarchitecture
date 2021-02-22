@@ -11,4 +11,6 @@
     <string name="following">Following</string>
     <string name="something_wrong">There\'s something wrong</string>
     <string name="search_hint">Search username...</string>
+    <string name="find_illustration">find illustration</string>
+    <string name="find_user">Find User!</string>
 </resources>

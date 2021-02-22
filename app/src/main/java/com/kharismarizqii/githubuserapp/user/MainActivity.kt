@@ -86,11 +86,16 @@ class MainActivity : AppCompatActivity() {
                     is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
                     is Resource.Success -> {
                         Log.e("Observe LiveData", " Resource Success: ${user.data}")
+                        binding.rvUser.visibility = View.VISIBLE
+                        binding.viewStarter.root.visibility = View.GONE
                         binding.progressBar.visibility = View.GONE
+                        binding.viewError.root.visibility = View.GONE
                         userAdapter.setData(user.data)
                     }
                     is Resource.Error -> {
+                        binding.rvUser.visibility = View.GONE
                         binding.progressBar.visibility = View.GONE
+                        binding.viewStarter.root.visibility = View.GONE
                         binding.viewError.root.visibility = View.VISIBLE
                         binding.viewError.tvError.text =
                             user.message ?: getString(R.string.something_wrong)
