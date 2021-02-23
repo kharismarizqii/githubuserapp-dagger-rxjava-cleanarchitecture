@@ -32,7 +32,7 @@ class UserRepository @Inject constructor(
             }
 
             override fun shouldFetch(data: List<User>?): Boolean =
-                data == null || data.isEmpty()
+                true
 
             override fun createCall(): Flowable<ApiResponse<List<UserResponse>>> =
                 remoteDataSource.getSearchUser(q)

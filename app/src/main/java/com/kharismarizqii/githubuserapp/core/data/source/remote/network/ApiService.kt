@@ -8,7 +8,6 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("search/users")
-    @Headers("Authorization: token bb10daf459ea7caa87b28e88044e231c1c0f18fd")
     fun getSearchUser(
         @Query("q") q: String
     ): Flowable<UserListResponse>

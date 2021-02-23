@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             .map { query ->
                 query.toString()
             }
-            .debounce(400, TimeUnit.MILLISECONDS)
+            .debounce(700, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
 
 
@@ -83,11 +83,13 @@ class MainActivity : AppCompatActivity() {
             Log.e("Observe LiveData", "${user.data}")
             if (user != null) {
                 when (user) {
-                    is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
+                    is Resource.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.viewStarter.root.visibility = View.GONE
+                    }
                     is Resource.Success -> {
                         Log.e("Observe LiveData", " Resource Success: ${user.data}")
                         binding.rvUser.visibility = View.VISIBLE
-                        binding.viewStarter.root.visibility = View.GONE
                         binding.progressBar.visibility = View.GONE
                         binding.viewError.root.visibility = View.GONE
                         userAdapter.setData(user.data)

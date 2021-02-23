@@ -1,5 +1,6 @@
 package com.kharismarizqii.githubuserapp.core.di
 
+import com.kharismarizqii.githubuserapp.BuildConfig
 import com.kharismarizqii.githubuserapp.core.data.source.remote.network.ApiService
 import dagger.Module
 import dagger.Provides
@@ -17,6 +18,11 @@ class NetworkModule {
     fun provideOkHttpClient() : OkHttpClient{
         return OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor {
+                val request = it.request()
+                val newRequest = request.newBuilder().header("Authorization", BuildConfig.API_KEY)
+                it.proceed(newRequest.build())
+            }
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
             .build()
